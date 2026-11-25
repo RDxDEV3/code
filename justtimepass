@@ -1,0 +1,357 @@
+// code for singly linkedlist where i have to find the intersection , union , difference in them 
+#include <iostream>
+using namespace std;
+
+struct Node {
+    Node* next;
+    int data;
+};
+
+void insert(Node*& head, int value) {
+    Node* newNode = new Node;
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+
+    Node* temp = head;
+
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newNode;
+}
+
+bool search(Node* head, int value) {
+    while (head != NULL) {
+        if(head->data == value) {
+            return true;
+        }
+        head = head->next;
+    }
+    return false;
+}
+
+
+void display(Node* head){
+    while (head != NULL) {
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+
+Node* unionSet(Node* A, Node* B) {
+    Node* result = NULL;
+
+    while (A != NULL) {
+        insert(result, A->data);
+        A = A->next;
+    }
+
+    while (B != NULL) {
+        if (!search(result, B->data)) {
+            insert(result, B->data);
+            B = B->next;
+        }
+        B = B->next;
+    }
+    return result;
+}
+
+Node* intersection(Node* A, Node* B) {
+    Node* result = NULL;
+    while (A !=NULL) {
+        if (search(B, A->data)) {
+            insert(result, A->data);
+        }
+        A = A->next;
+    }
+    return result;
+}
+
+Node* difference(Node* A, Node* B) {
+    Node* result = NULL;
+    while (A !=NULL) {
+        if (!search(B, A->data)) {
+            insert(result, A->data);
+        }
+        A = A->next;
+    }
+    return result;
+}
+
+
+int count(Node* head) {
+    int count = 0;
+    while (head != NULL) {
+        count += 1;
+        head = head->next;
+    }
+    return count;
+}
+
+int main() {
+    Node* A = NULL;
+    Node* B = NULL;
+
+    int vanilla[] = {1,5,6,8,12,15,47,45,47};
+    int butterscotch[] = {1,5,8,9,15, 44,48,50,55};
+
+    for (int x: vanilla) {
+        insert(A, x);
+    }
+
+    for(int y: butterscotch) {
+        insert(B, y);
+    }
+    cout << "yooo";
+    display(A);
+
+    Node* UnionNode = unionSet(A, B);
+    Node* intersectionNode = intersection(A, B);
+    Node* differenceNodeAB = difference(A,B);
+    Node* differenceNodeBA = difference(B,A);
+    cout << "UnionNode =  ";
+    display(UnionNode);
+
+    cout << "Intersection =   ";
+    display(intersectionNode);
+
+     cout << "difference";
+     display(differenceNodeAB);
+     display(differenceNodeBA);
+
+    cout << count(UnionNode);
+}
+
+
+======================================================================
+
+//do with doublylinked list 
+#include <iostream>
+using namespace std;
+
+struct Node {
+    int data;
+    Node* next;
+    Node* prev;
+};
+
+
+void insert(Node*& head, Node*& tail, int value) {
+    Node* newNode = new Node(value, NULL , NULL);
+
+    if (head == NULL) {
+        head = tail = newNode;
+    }
+    else {
+        tail->next = newNode;
+        newNode->prev = tail;
+        tail = newNode;
+    }
+}
+
+Node* ones(Node* head) {
+    Node* result = NULL;
+    Node* resultTail = NULL;
+
+    while(head != NULL) {
+        insert(result, resultTail, 1 - head->data);
+        head = head->next;
+    }
+    return result;
+}
+
+void twos(Node* head) {
+    // ones(head);
+
+    Node* temp = head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    int carry = 1;
+
+    while (temp != NULL && carry == 1) {
+        if (temp->data == 0) {
+            temp->data = 1;
+            carry = 0;
+        } else {
+            temp->data = 0;
+            temp = temp->prev;
+        }
+    }
+}
+
+void display(Node* head) {
+    while(head != NULL) {
+        cout << head->data << " ";
+        head = head->next;
+    }
+    cout << endl;
+}
+int main() {
+    int n, bit;
+    Node* h1 = NULL, *t1 = NULL;
+    Node* h2 = NULL, *t2 = NULL;
+    cout << "enter Number of Bits:";
+    cin >> n;
+
+    cout << "enter the first NUMber";
+    for (int i = 0; i < n; i++) {
+        cin >> bit;
+        insert(h1, t1, bit);
+    }
+
+
+
+    Node* Ones = ones(h1);
+    display(Ones);
+
+    twos(Ones);
+    display(Ones);
+
+}
+
+========================================================================================================
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+//checking for the string is palindrome or not 
+bool palindrome(string s) {
+    stack<char> st;
+
+    for (char c : s) {
+        st.push(c);
+    }
+
+    for (char c : s) {
+        if (c != st.top()) 
+            return false;
+        st.pop();
+    }
+    return true;
+}
+
+string cleanString(string s) {
+    stack<char> st;
+    string result = "";
+
+    for (char c: s) {
+        if (isalnum(c)) {
+            result += tolower(c);
+        }
+    }
+    return result;
+}
+
+void  reversedString(string s) {
+    stack<char> st;
+
+    for (char c : s)
+        st.push(c);
+
+    cout << "Reverse string: ";
+
+    while (!st.empty()) {
+        cout << st.top();
+        st.pop();
+    }
+
+    cout << endl;
+}
+
+int main() {
+    string s = "MADAM";
+        // Clean string
+    string clean = cleanString(s);
+
+    cout << "Cleaned string: " << clean << endl;
+
+    // Check palindrome
+    if (palindrome(clean))
+        cout << "String is Palindrome" << endl;
+    else
+        cout << "String is not Palindrome" << endl;
+
+    // Reverse string
+    reversedString(s) ;
+    return 0;
+}
+
+
+================================================================================================
+#include <iostream>
+#include <stack>
+#include <string> 
+using namespace std;
+
+int prority(char ch) {
+    if (ch == '*' || ch == '/') {
+        return 2;
+    }
+    return 1;
+}
+
+string postfix(string s) {
+    stack<char> st;
+    string post = "";
+
+    for (char ch : s) {
+        if (ch >= '0' && ch <= '9') {
+            post += ch;
+        } else {
+            while (!st.empty() && prority(st.top()) >= prority(ch)) {
+                post += st.top();
+                st.pop();
+            }
+            st.push(ch);
+        }
+    }
+    while (!st.empty()){
+        post += st.top();
+        st.pop();
+    }
+    return post;
+}
+
+int calcuation(string s) {
+    stack<int> st;
+    for (char ch :s) {
+        if (ch >= '0' && ch <= '9')
+            st.push(ch - '0');
+        else {
+            int b = st.top();
+            st.pop();
+
+            int a =  st.top();
+            st.pop();
+
+            if (ch == '+') st.push(a + b);
+            if (ch == '-') st.push(a - b);
+            if (ch == '*') st.push(a * b);
+            if (ch == '/') st.push(a / b);
+        }
+    }
+    return st.top();
+}
+
+int main() {
+    string s;
+    cout << "the calculation in string using the operators like /*-+ " ;
+    cin >> s;
+
+    string infixanswer = postfix(s);
+    cout << infixanswer << endl;
+
+    
+    cout << calcuation(infixanswer) << endl;
+
+}
