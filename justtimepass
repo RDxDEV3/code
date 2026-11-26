@@ -1,357 +1,220 @@
-// code for singly linkedlist where i have to find the intersection , union , difference in them 
-#include <iostream>
-using namespace std;
-
-struct Node {
-    Node* next;
-    int data;
-};
-
-void insert(Node*& head, int value) {
-    Node* newNode = new Node;
-    newNode->data = value;
-    newNode->next = NULL;
-
-    if (head == NULL) {
-        head = newNode;
-        return;
-    }
-
-    Node* temp = head;
-
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-
-    temp->next = newNode;
-}
-
-bool search(Node* head, int value) {
-    while (head != NULL) {
-        if(head->data == value) {
-            return true;
-        }
-        head = head->next;
-    }
-    return false;
-}
-
-
-void display(Node* head){
-    while (head != NULL) {
-        cout << head->data << " ";
-        head = head->next;
-    }
-    cout << endl;
-}
-
-Node* unionSet(Node* A, Node* B) {
-    Node* result = NULL;
-
-    while (A != NULL) {
-        insert(result, A->data);
-        A = A->next;
-    }
-
-    while (B != NULL) {
-        if (!search(result, B->data)) {
-            insert(result, B->data);
-            B = B->next;
-        }
-        B = B->next;
-    }
-    return result;
-}
-
-Node* intersection(Node* A, Node* B) {
-    Node* result = NULL;
-    while (A !=NULL) {
-        if (search(B, A->data)) {
-            insert(result, A->data);
-        }
-        A = A->next;
-    }
-    return result;
-}
-
-Node* difference(Node* A, Node* B) {
-    Node* result = NULL;
-    while (A !=NULL) {
-        if (!search(B, A->data)) {
-            insert(result, A->data);
-        }
-        A = A->next;
-    }
-    return result;
-}
-
-
-int count(Node* head) {
-    int count = 0;
-    while (head != NULL) {
-        count += 1;
-        head = head->next;
-    }
-    return count;
-}
-
-int main() {
-    Node* A = NULL;
-    Node* B = NULL;
-
-    int vanilla[] = {1,5,6,8,12,15,47,45,47};
-    int butterscotch[] = {1,5,8,9,15, 44,48,50,55};
-
-    for (int x: vanilla) {
-        insert(A, x);
-    }
-
-    for(int y: butterscotch) {
-        insert(B, y);
-    }
-    cout << "yooo";
-    display(A);
-
-    Node* UnionNode = unionSet(A, B);
-    Node* intersectionNode = intersection(A, B);
-    Node* differenceNodeAB = difference(A,B);
-    Node* differenceNodeBA = difference(B,A);
-    cout << "UnionNode =  ";
-    display(UnionNode);
-
-    cout << "Intersection =   ";
-    display(intersectionNode);
-
-     cout << "difference";
-     display(differenceNodeAB);
-     display(differenceNodeBA);
-
-    cout << count(UnionNode);
-}
-
-
-======================================================================
-
-//do with doublylinked list 
-#include <iostream>
-using namespace std;
-
-struct Node {
-    int data;
-    Node* next;
-    Node* prev;
-};
-
-
-void insert(Node*& head, Node*& tail, int value) {
-    Node* newNode = new Node(value, NULL , NULL);
-
-    if (head == NULL) {
-        head = tail = newNode;
-    }
-    else {
-        tail->next = newNode;
-        newNode->prev = tail;
-        tail = newNode;
-    }
-}
-
-Node* ones(Node* head) {
-    Node* result = NULL;
-    Node* resultTail = NULL;
-
-    while(head != NULL) {
-        insert(result, resultTail, 1 - head->data);
-        head = head->next;
-    }
-    return result;
-}
-
-void twos(Node* head) {
-    // ones(head);
-
-    Node* temp = head;
-    while (temp->next != NULL) {
-        temp = temp->next;
-    }
-
-    int carry = 1;
-
-    while (temp != NULL && carry == 1) {
-        if (temp->data == 0) {
-            temp->data = 1;
-            carry = 0;
-        } else {
-            temp->data = 0;
-            temp = temp->prev;
-        }
-    }
-}
-
-void display(Node* head) {
-    while(head != NULL) {
-        cout << head->data << " ";
-        head = head->next;
-    }
-    cout << endl;
-}
-int main() {
-    int n, bit;
-    Node* h1 = NULL, *t1 = NULL;
-    Node* h2 = NULL, *t2 = NULL;
-    cout << "enter Number of Bits:";
-    cin >> n;
-
-    cout << "enter the first NUMber";
-    for (int i = 0; i < n; i++) {
-        cin >> bit;
-        insert(h1, t1, bit);
-    }
-
-
-
-    Node* Ones = ones(h1);
-    display(Ones);
-
-    twos(Ones);
-    display(Ones);
-
-}
-
-========================================================================================================
-#include <iostream>
-#include <stack>
-#include <string>
-using namespace std;
-
-//checking for the string is palindrome or not 
-bool palindrome(string s) {
-    stack<char> st;
-
-    for (char c : s) {
-        st.push(c);
-    }
-
-    for (char c : s) {
-        if (c != st.top()) 
-            return false;
-        st.pop();
-    }
-    return true;
-}
-
-string cleanString(string s) {
-    stack<char> st;
-    string result = "";
-
-    for (char c: s) {
-        if (isalnum(c)) {
-            result += tolower(c);
-        }
-    }
-    return result;
-}
-
-void  reversedString(string s) {
-    stack<char> st;
-
-    for (char c : s)
-        st.push(c);
-
-    cout << "Reverse string: ";
-
-    while (!st.empty()) {
-        cout << st.top();
-        st.pop();
-    }
-
-    cout << endl;
-}
-
-int main() {
-    string s = "MADAM";
-        // Clean string
-    string clean = cleanString(s);
-
-    cout << "Cleaned string: " << clean << endl;
-
-    // Check palindrome
-    if (palindrome(clean))
-        cout << "String is Palindrome" << endl;
-    else
-        cout << "String is not Palindrome" << endl;
-
-    // Reverse string
-    reversedString(s) ;
-    return 0;
-}
-
-
-================================================================================================
-#include <iostream>
-#include <stack>
-#include <string> 
-using namespace std;
-
-int prority(char ch) {
-    if (ch == '*' || ch == '/') {
-        return 2;
-    }
-    return 1;
-}
-
-string postfix(string s) {
-    stack<char> st;
-    string post = "";
-
-    for (char ch : s) {
-        if (ch >= '0' && ch <= '9') {
-            post += ch;
-        } else {
-            while (!st.empty() && prority(st.top()) >= prority(ch)) {
-                post += st.top();
-                st.pop();
-            }
-            st.push(ch);
-        }
-    }
-    while (!st.empty()){
-        post += st.top();
-        st.pop();
-    }
-    return post;
-}
-
-int calcuation(string s) {
-    stack<int> st;
-    for (char ch :s) {
-        if (ch >= '0' && ch <= '9')
-            st.push(ch - '0');
-        else {
-            int b = st.top();
-            st.pop();
-
-            int a =  st.top();
-            st.pop();
-
-            if (ch == '+') st.push(a + b);
-            if (ch == '-') st.push(a - b);
-            if (ch == '*') st.push(a * b);
-            if (ch == '/') st.push(a / b);
-        }
-    }
-    return st.top();
-}
-
-int main() {
-    string s;
-    cout << "the calculation in string using the operators like /*-+ " ;
-    cin >> s;
-
-    string infixanswer = postfix(s);
-    cout << infixanswer << endl;
-
-    
-    cout << calcuation(infixanswer) << endl;
-
-}
+EXP1 ============================================================================
+# Program to implement Set Operations
+
+# Create two sets
+A = {1, 2, 3, 4, 5}
+B = {4, 5, 6, 7, 8}
+
+print("Set A:", A)
+print("Set B:", B)
+
+# 1. Union
+print("Union:", A.union(B))
+
+# 2. Intersection
+print("Intersection:", A.intersection(B))
+
+# 3. Difference
+print("Difference (A - B):", A.difference(B))
+
+# 4. Cartesian Product
+cartesian_product = [(x, y) for x in A for y in B]
+print("Cartesian Product:", cartesian_product)
+
+Exp2========================================================================================
+
+# Check properties of a relation
+
+A = {1, 2, 3}
+R = {(1,1), (2,2), (3,3), (1,2), (2,1)}
+
+# Reflexive
+reflexive = True
+for a in A:
+    if (a,a) not in R:
+        reflexive = False
+
+# Symmetric
+symmetric = True
+for (a,b) in R:
+    if (b,a) not in R:
+        symmetric = False
+
+# Transitive
+transitive = True
+for (a,b) in R:
+    for (c,d) in R:
+        if b == c and (a,d) not in R:
+            transitive = False
+
+# Equivalence
+equivalence = reflexive and symmetric and transitive
+
+print("Reflexive:", reflexive)
+print("Symmetric:", symmetric)
+print("Transitive:", transitive)
+print("Equivalence:", equivalence)
+EXP3=====================================================================================
+
+
+
+
+# Check Injective, Surjective and Bijective functions
+
+A = {1, 2, 3}
+B = {2, 4, 6}
+
+# Function mapping
+f = {1: 2, 2: 4, 3: 6}
+
+print("Domain:", A)
+print("Codomain:", B)
+print("Mapping:", f)
+
+# Injective
+injective = len(set(f.values())) == len(A)
+
+# Surjective
+surjective = set(f.values()) == B
+
+# Bijective
+bijective = injective and surjective
+
+print("Injective:", injective)
+print("Surjective:", surjective)
+print("Bijective:", bijective)
+
+
+EXP4==========================================================================================================
+
+# Calculate Mean, Median and Mode
+
+data = [10, 20, 20, 30, 40, 50, 20]
+
+# Mean
+mean = sum(data) / len(data)
+
+# Median
+sorted_data = sorted(data)
+n = len(data)
+
+if n % 2 == 0:
+    median = (sorted_data[n//2 - 1] + sorted_data[n//2]) / 2
+else:
+    median = sorted_data[n//2]
+
+# Mode
+mode = max(data, key=data.count)
+
+print("Dataset:", data)
+print("Mean:", mean)
+print("Median:", median)
+print("Mode:", mode)
+
+
+EXP5==========================================================================================================
+
+
+# Calculate Variance and Standard Deviation
+
+data = [10, 20, 30, 40, 50, 100]
+
+# Calculate Mean
+mean = sum(data) / len(data)
+
+# Calculate Variance
+variance = sum((x - mean)**2 for x in data) / len(data)
+
+# Calculate Standard Deviation
+sd = variance ** 0.5
+
+# Identify Outliers using 2 Standard Deviations
+print("Mean:", mean)
+print("Variance:", variance)
+print("Standard Deviation:", sd)
+
+print("Outliers:")
+for x in data:
+    if abs(x - mean) > 2 * sd:
+        print(x)
+
+
+exp 6 ========================================================================================================
+
+
+# Calculate probability of drawing cards
+
+# Create a deck of 52 cards
+suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades']
+ranks = ['A', '2', '3', '4', '5', '6', '7',
+         '8', '9', '10', 'J', 'Q', 'K']
+
+deck = []
+
+for suit in suits:
+    for rank in ranks:
+        deck.append(rank + " of " + suit)
+
+# Calculate probability
+total = len(deck)
+
+# Event 1: Drawing a King
+kings = [card for card in deck if card.startswith('K')]
+
+# Event 2: Drawing a Heart
+hearts = [card for card in deck if 'Hearts' in card]
+
+# Event 3: Drawing an Ace
+aces = [card for card in deck if card.startswith('A')]
+
+print("Total Cards:", total)
+print("Probability of King:", len(kings) / total)
+print("Probability of Heart:", len(hearts) / total)
+print("Probability of Ace:", len(aces) / total)
+
+
+exp7===============================================================================================================
+
+
+# Program to calculate Gradient, Divergence and Curl
+
+import sympy as sp
+
+# Define variables
+x, y, z = sp.symbols('x y z')
+
+# Scalar field
+f = x**2 + y**2 + z**2
+
+# Vector field
+F = [x*y, y*z, z*x]
+
+# Gradient
+gradient = [sp.diff(f, x), sp.diff(f, y), sp.diff(f, z)]
+
+# Divergence
+divergence = sp.diff(F[0], x) + sp.diff(F[1], y) + sp.diff(F[2], z)
+
+# Curl
+curl = [
+    sp.diff(F[2], y) - sp.diff(F[1], z),
+    sp.diff(F[0], z) - sp.diff(F[2], x),
+    sp.diff(F[1], x) - sp.diff(F[0], y)
+]
+
+# Display results
+print("Gradient:", gradient)
+print("Divergence:", divergence)
+print("Curl:", curl)
+
+# Analyze the field
+if divergence == 0:
+    print("Field is Solenoidal")
+else:
+    print("Field is not Solenoidal")
+
+if curl == [0, 0, 0]:
+    print("Field is Irrotational")
+else:
+    print("Field is not Irrotational")
+
